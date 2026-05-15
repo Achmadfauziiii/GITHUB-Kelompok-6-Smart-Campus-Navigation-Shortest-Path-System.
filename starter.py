@@ -103,24 +103,91 @@ Dict[str, Optional[str]]]:
             if neighbor not in visited:
 
                 new_dist = dist[current] + weight
+
+                if new_dist < dist[neighbor]:
+
+                    dist[neighbor] = new_dist
+                    parent[neighbor] = current
     return dist, parent
 
 
 def reconstruct_path(parent: Dict[str, Optional[str]], source: str, target: str) -> List[str]:
     """Rekonstruksi jalur dari parent dict. Big-O: O(V)."""
     # TODO: implementasikan
+    path = []
+
+    current = target
+
+    while current is not None:
+
+        path.append(current)
+
+        current = parent[current]
+
+    path.reverse()
+
+    return path
     pass
 
 # — BFS (implementasikan dari sini) —
 def bfs(graph: Graph, source: str) -> List[str]:
     """BFS berbasis Queue Linked List. Big-O: O(V + E)."""
     # TODO: gunakan Queue berbasis Linked List (BUKAN collections.deque)
+    visited = set()
+
+    traversal =[]
+
+    queue = [source]
+
+    visited.add(source)
+
+    while queue:
+
+        current = queue.pop(0)
+
+        traversal.append(current)
+
+        for neighbor, _ in graph.neighbors(current):
+
+            if neighbor not in visited:
+
+                visited.add(neighbor)
+
+                queue.append(neighbor)
+
+    return traversal
     pass
 
 # — DFS (implementasikan dari sini) —
 def dfs(graph: Graph, source: str) -> List[str]:
     """DFS berbasis Stack Linked List. Big-O: O(V + E)."""
     # TODO: gunakan Stack berbasis Linked List (BUKAN list Python)
+    
+    visited = set()
+
+    traversal = []
+
+    stack = [source]
+
+    while stack:
+
+        current = stack.pop()
+
+        if current not in visited:
+
+            visited.add(current)
+
+            traversal.append(current)
+
+            neighbors = graph.neighbors(current)
+
+            for neighbor, _ in reversed(neighbors):
+
+                if neighbor not in visited:
+
+                    stack.append(neighbor)
+
+    return traversal
     pass
 
 # — BST Direktori Gedung (implementasikan dari sini) —
@@ -138,14 +205,77 @@ class BSTGedung:
 
     def insert(self, key: str, nama: str) -> None:
         # TODO: implementasikan
+
+        new_node = BSTNode(key, nama)
+
+        if self.root is None:
+
+            self.root = new_node
+            return
+
+        current = self.root
+
+        while True:
+
+            if key < current.key:
+
+                if current.left is None:
+
+                    current.left = new_node
+                    return
+
+                current = current.left
+
+            else:
+
+                if current.right is None:
+
+                    current.right = new_node
+                    return
+
+                current = current.right
         pass
 
     def search(self, key: str) -> Optional[str]:
         # TODO: implementasikan; kembalikan nama gedung atau None
+
+        current = self.root
+
+        while current:
+
+            if key == current.key:
+
+                return current.nama
+
+            elif key < current.key:
+
+                current = current.left
+
+            else:
+
+                current = current.right
+
+        return None
         pass
 
     def inorder(self) -> List[str]:
         # TODO: kembalikan list (key, nama) terurut
+
+        result = []
+
+        def traverse(node):
+
+            if node:
+
+                traverse(node.left)
+
+                result.append((node.key, node.nama))
+
+                traverse(node.right)
+
+        traverse(self.root)
+
+        return result
         pass
 
 # — Main CLI —
