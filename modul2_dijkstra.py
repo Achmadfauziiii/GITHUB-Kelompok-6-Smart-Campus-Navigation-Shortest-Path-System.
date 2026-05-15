@@ -18,11 +18,8 @@ Dict[str, Optional[str]]]:
 
         current = None
         current_dist = INF
-
         for node in graph.adj:
-           
             if node not in visited and dist[node] < current_dist:
-
                 current = node
                 current_dist = dist[node]
 
@@ -32,13 +29,9 @@ Dict[str, Optional[str]]]:
         visited.add(current)
 
         for neighbor, weight in graph.neighbors(current):
-
             if neighbor not in visited:
-
                 new_dist = dist[current] + weight
-
                 if new_dist < dist[neighbor]:
-
                     dist[neighbor] = new_dist
                     parent[neighbor] = current
     return dist, parent
@@ -48,16 +41,20 @@ def reconstruct_path(parent: Dict[str, Optional[str]], source: str, target: str)
     """Rekonstruksi jalur dari parent dict. Big-O: O(V)."""
     # TODO: implementasikan
     path = []
-
     current = target
 
     while current is not None:
-
         path.append(current)
-
+        if current == source:
+            break
         current = parent[current]
+    else:
+        return []
 
     path.reverse()
+
+    if not path or path[0] != source:
+        return []
 
     return path
     pass
