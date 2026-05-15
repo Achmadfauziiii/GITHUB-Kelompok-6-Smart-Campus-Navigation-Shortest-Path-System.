@@ -81,6 +81,28 @@ Dict[str, Optional[str]]]:
     dist[source] = 0
 
     # TODO: implementasikan loop Dijkstra
+    while len(visited) < len(graph.adj):
+
+        current = None
+        current_dist = INF
+
+        for node in graph.adj:
+           
+            if node not in visited and dist[node] < current_dist:
+
+                current = node
+                current_dist = dist[node]
+
+        if current is None:
+            break
+
+        visited.add(current)
+
+        for neighbor, weight in graph.neighbors(current):
+
+            if neighbor not in visited:
+
+                new_dist = dist[current] + weight
     return dist, parent
 
 
