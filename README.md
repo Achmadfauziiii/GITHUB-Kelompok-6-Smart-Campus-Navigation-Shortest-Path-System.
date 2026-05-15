@@ -1,4 +1,4 @@
-# 💖 Smart Campus Navigation & Shortest Path System 💖
+#  Smart Campus Navigation & Shortest Path System 💖
 
 ### 📚 Domain:
 Sistem Navigasi Kampus | Struktur Data: Graph, BST, Queue ✨
