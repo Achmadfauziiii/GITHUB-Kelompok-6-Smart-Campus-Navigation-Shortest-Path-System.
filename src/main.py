@@ -6,12 +6,24 @@ np.random.seed(7)
 
 # — Data gedung UNY (30 node simulatie) —
 GEDUNG_DATA = [
-    ('A1', 'Gerbang Utama'), ('A2', 'Rektorat'),
-    ('B1', 'FT-Gedung 1'), ('B2', 'FT-Gedung B'),
-    ('B3', 'Lab Elektronika'), ('B4', 'Lab Komputer'),
-    ('C1', 'FMIPA-Gedung A'), ('C2', 'Perpustakaan'),
-    ('D1', 'Stadion'), ('D2', 'GOR'),
-    # tambahkan 20 gedung lainnya sesuai kreativitas kelompok
+    ('A1', 'Gerbang Utama'),           ('A2', 'Rektorat'),
+    ('B1', 'FT-Gedung A'),             ('B2', 'FT-Gedung B'),
+    ('B3', 'Lab Elektronika'),         ('B4', 'Lab Komputer'),
+    ('C1', 'FMIPA-Gedung A'),          ('C2', 'Lab Fisika'),
+    ('D1', 'Stadion'),                 ('D2', 'GOR'),
+    ('E1', 'PKM FT UNY'),              ('E2', 'LPTK FT UNY'),
+    
+    ('E3', 'FISIP-Gedung A'),          ('E4', 'FISIP-Gedung B'),
+    ('E5', 'Ruang Seminar FISIP'),     ('E6', 'Pusat Kajian Sosial'),
+    ('E7', 'Perpustakaan'),              ('E8', 'Ruang Sidang FISIP'),
+
+    ('F1', 'FEB-Gedung A'),            ('F2', 'FEB-Gedung B'),
+    ('F3', 'Lab Akuntansi'),           ('F4', 'Lab Manajemen'),
+    ('F5', 'Pojok Bursa Efek'),        ('F6', 'Ruang Sidang FEB'),
+
+    ('G1', 'FIKK-Gedung A'),           ('G2', 'FIKK-Gedung B'),
+    ('G3', 'Laboratorium Olahraga'),   ('G4', 'Lapangan Atletik'),
+    ('G5', 'Kolam Renang FIKK'),       ('G6', 'Lapangan Sepak Bola'),
 ]
 
 # — Edge berbobot (u, v, bobot_meter) acak, seed=7 —
