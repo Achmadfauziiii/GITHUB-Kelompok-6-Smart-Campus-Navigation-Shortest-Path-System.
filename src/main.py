@@ -15,7 +15,7 @@ GEDUNG_DATA = [
     
     ('E3', 'FISIP-Gedung A'),          ('E4', 'FISIP-Gedung B'),
     ('E5', 'Ruang Seminar FISIP'),     ('E6', 'Pusat Kajian Sosial'),
-    ('E7', 'Perpustakaan'),              ('E8', 'Ruang Sidang FISIP'),
+    ('E7', 'Perpustakaan'),            ('E8', 'Ruang Sidang FISIP'),
 
     ('F1', 'FEB-Gedung A'),            ('F2', 'FEB-Gedung B'),
     ('F3', 'Lab Akuntansi'),           ('F4', 'Lab Manajemen'),
@@ -105,8 +105,7 @@ class Graph:
         return False
 
 # — Dijkstra (implementasikan dari sini) —
-def dijkstra(graph: Graph, source: str) -> Tuple[Dict[str, int],
-Dict[str, Optional[str]]]:
+def dijkstra(graph: Graph, source: str) -> Tuple[Dict[str, int], Dict[str, Optional[str]]]:
     """
     Mengembalikan (dist, parent).
     dist[v] = jarak minimum dari source ke v.
@@ -119,7 +118,6 @@ Dict[str, Optional[str]]]:
     visited = set()
     dist[source] = 0
 
-    # TODO: implementasikan loop Dijkstra
     while len(visited) < len(graph.adj):
 
         current = None
@@ -145,7 +143,6 @@ Dict[str, Optional[str]]]:
 
 def reconstruct_path(parent: Dict[str, Optional[str]], source: str, target: str) -> List[str]:
     """Rekonstruksi jalur dari parent dict. Big-O: O(V)."""
-    # TODO: implementasikan
     path = []
     current = target
 
@@ -222,7 +219,6 @@ class Stack:
 # — BFS (implementasikan dari sini) —
 def bfs(graph: Graph, source: str) -> List[str]:
     """BFS berbasis Queue Linked List. Big-O: O(V + E)."""
-    # TODO: gunakan Queue berbasis Linked List (BUKAN collections.deque)
     visited = set()
     traversal =[]
     queue = Queue()
@@ -245,7 +241,6 @@ def bfs(graph: Graph, source: str) -> List[str]:
 # — DFS (implementasikan dari sini) —
 def dfs(graph: Graph, source: str) -> List[str]:
     """DFS berbasis Stack Linked List. Big-O: O(V + E)."""
-    # TODO: gunakan Stack berbasis Linked List (BUKAN list Python)
     visited = set()
     traversal = []
     stack = Stack()
@@ -282,16 +277,87 @@ class BSTGedung:
         self.root: Optional[BSTNode] = None
 
     def insert(self, key: str, nama: str) -> None:
-        # TODO: implementasikan
-        pass
+        if self.root is None:
+            self.root = BSTNode(key, nama)
+            return
+            
+        current = self.root
+        while True:
+            if key < current.key:
+                if current.left is None:
+                    current.left = BSTNode(key, nama)
+                    break
+                current = current.left
+            elif key > current.key:
+                if current.right is None:
+                    current.right = BSTNode(key, nama)
+                    break
+                current = current.right
+            else:
+                break
 
     def search(self, key: str) -> Optional[str]:
-        # TODO: implementasikan; kembalikan nama gedung atau None
-        pass
+        current = self.root
+        while current is not None:
+            if key == current.key:
+                return current.nama
+            elif key < current.key:
+                current = current.left
+            else:
+                current = current.right
+        return None
 
     def inorder(self) -> List[str]:
-        # TODO: kembalikan list (key, nama) terurut
-        pass
+        result = []
+        self._inorder_rekursif(self.root, result)
+        return result
+        
+    def _inorder_rekursif(self, node: Optional[BSTNode], result: List[str]):
+        if node:
+            self._inorder_rekursif(node.left, result)
+            result.append(f"[{node.key}] {node.nama}")
+            self._inorder_rekursif(node.right, result)
+
+    def delete(self, key: str) -> None:
+        self.root = self._delete_rekursif(self.root, key)
+
+    def _delete_rekursif(self, root: Optional[BSTNode], key: str) -> Optional[BSTNode]:
+        if root is None:
+            return root
+        if key < root.key:
+            root.left = self._delete_rekursif(root.left, key)
+        elif key > root.key:
+            root.right = self._delete_rekursif(root.right, key)
+        else:
+            if root.left is None:
+                return root.right
+            elif root.right is None:
+                return root.left
+            temp = self._min_value_node(root.right)
+            root.key = temp.key
+            root.nama = temp.nama
+            root.right = self._delete_rekursif(root.right, temp.key)
+        return root
+
+    def _min_value_node(self, node: BSTNode) -> BSTNode:
+        current = node
+        while current.left is not None:
+            current = current.left
+        return current
+
+
+# — Modul 5: Deteksi Komponen Terisolasi —
+def deteksi_terisolasi(graph: Graph, gateway: str = 'A1') -> List[Tuple[str, str]]:
+    semua_gedung = set(graph.adj.keys())
+    gedung_terjangkau = set(bfs(graph, gateway))
+    gedung_terisolasi = semua_gedung - gedung_terjangkau
+
+    hasil = []
+    for gid in gedung_terisolasi:
+        nama = graph.node_names.get(gid, "Unknown")
+        hasil.append((gid, nama))
+    return hasil
+
 
 # — Main CLI —
 def main():
@@ -307,10 +373,100 @@ def main():
     for u, v, w in edges:
         g.add_edge(u, v, w)
 
-    print('Smart Campus Navigation System. Ketik BANTUAN untuk daftar perintah')
-    # TODO: implementasikan loop CLI
+    print('='*55)
+    print(' SMART CAMPUS NAVIGATION SYSTEM '.center(55, '='))
+    print('='*55)
+    print("Ketik 'BANTUAN' untuk melihat daftar perintah.")
+    
+    while True:
+        try:
+            inp = input("\n[SmartCampus] > ").strip().split()
+            if not inp: continue
+                
+            cmd = inp[0].upper()
+            
+            if cmd == "BANTUAN":
+                print("1. JALUR <sumber> <tujuan> (Cari rute terpendek)")
+                print("2. JELAJAH_DFS <sumber>    (Eksplorasi DFS)")
+                print("3. JELAJAH_BFS <sumber>    (Eksplorasi BFS)")
+                print("4. CARI_GEDUNG <kode>      (Cari nama gedung)")
+                print("5. HAPUS_GEDUNG <kode>     (Hapus dari direktori)")
+                print("6. DIREKTORI               (Lihat semua gedung urut abjad)")
+                print("7. AUDIT_ISOLASI           (Cek jaringan terputus)")
+                print("8. KELUAR")
+                
+            elif cmd == "JALUR":
+                if len(inp) != 3:
+                    print("Format salah! Gunakan: JALUR <sumber> <tujuan>")
+                    continue
+                src, dst = inp[1], inp[2]
+                
+                t_start = time.perf_counter()
+                dist, parent = dijkstra(g, src)
+                t_end = time.perf_counter()
+                
+                if dist.get(dst, float('inf')) == float('inf'):
+                    print(f"Tidak ada jalur dari {src} ke {dst}")
+                else:
+                    path = reconstruct_path(parent, src, dst)
+                    print(f"Jalur: {' -> '.join(path)}")
+                    print(f"Total Jarak: {dist[dst]} meter")
+                    print(f"[Big-O: O(V^2 + E) | Waktu Eksekusi: {(t_end-t_start)*1000:.4f} ms]")
+                    
+            elif cmd == "JELAJAH_DFS":
+                if len(inp) != 2: continue
+                print("Kunjungan DFS:", " -> ".join(dfs(g, inp[1])))
+                print("[Big-O: O(V + E)]")
+                
+            elif cmd == "JELAJAH_BFS":
+                if len(inp) != 2: continue
+                print("Kunjungan BFS:", " -> ".join(bfs(g, inp[1])))
+                print("[Big-O: O(V + E)]")
+                
+            elif cmd == "CARI_GEDUNG":
+                if len(inp) != 2: continue
+                nama = bst.search(inp[1])
+                if nama:
+                    print(f"Ditemukan: {nama}")
+                else:
+                    print("Gedung tidak ditemukan.")
+                print("[Big-O: O(log V)]")
+                
+            elif cmd == "HAPUS_GEDUNG":
+                if len(inp) != 2: continue
+                kode = inp[1]
+                if bst.search(kode):
+                    bst.delete(kode)
+                    print(f"Gedung [{kode}] berhasil dihapus dari direktori BST.")
+                else:
+                    print(f"Gedung [{kode}] tidak ditemukan.")
+                print("[Big-O: O(log V)]")
+
+            elif cmd == "DIREKTORI":
+                print("\n".join(bst.inorder()))
+                print("\n[Big-O: O(V)]")
+
+            elif cmd == "AUDIT_ISOLASI":
+                terisolasi = deteksi_terisolasi(g, 'A1')
+                if not terisolasi:
+                    print("Audit Selesai: Jaringan aman, tidak ada gedung terisolasi.")
+                else:
+                    print(f"PERINGATAN! Ditemukan {len(terisolasi)} gedung TERISOLASI:")
+                    for gid, nama in terisolasi:
+                        print(f"- [{gid}] {nama}")
+                print("[Big-O: O(V + E)]")
+                
+            elif cmd == "KELUAR":
+                print("Menutup Smart Campus Navigation System. Sampai jumpa!")
+                break
+                
+            else:
+                print("Perintah tidak dikenali. Ketik BANTUAN.")
+                
+        except KeyboardInterrupt:
+            print("\nSistem dihentikan paksa. Sampai jumpa!")
+            break
 
 
 if __name__ == '__main__':
     main()
-```
