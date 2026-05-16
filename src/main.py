@@ -64,7 +64,7 @@ class Graph:
 
     def add_node(self, node_id: str, nama: str) -> None:
         """Big-O: O(1)."""
-         if node_id not in self.adj:
+        if node_id not in self.adj:
             self.adj[node_id] = None
             self.node_names[node_id] = nama
 
