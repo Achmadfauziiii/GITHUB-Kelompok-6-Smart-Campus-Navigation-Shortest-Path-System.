@@ -41,7 +41,7 @@ def generate_edges(nodes, seed=7):
         edges.append((u, v, w))
 
     # Tambah edge acak untuk densitas
-    extra = int(n * 0.5)
+    extra = int(n * 0.87)
     for _ in range(extra):
         i, j = rng.choice(n, 2, replace=False)
         w = int(rng.integers(50, 500))
